@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* 🎨 Paleta de colores mejorada */
+    --color-primary: 59 130 246; /* Azul moderno */
+    --color-secondary: 244 114 182; /* Rosa vibrante */
+    --color-accent: 234 88 12; /* Naranja */
+    --color-bg: 255 255 255;
+    --color-text: 31 41 55; /* Gris oscuro */
+    --color-muted: 107 114 128; /* Gris suave */
+
+    /* 🖋 Tipografía y accesibilidad */
+    color-scheme: light dark;
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.6;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 🌙 Modo oscuro optimizado */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-bg: 0 24 39; /* Azul oscuro */
+      --color-text: 229 231 235; /* Gris claro */
+      --color-muted: 156 163 175; /* Gris suave */
+    }
+  }
+
+  /* 📜 Configuración base del body */
+  body {
+    @apply min-h-screen bg-bg text-text antialiased flex flex-col;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* 🛠 Estilos mejorados para enlaces */
+  a {
+    @apply text-primary font-medium transition-colors duration-200 underline-offset-4;
+    &:hover {
+      @apply opacity-80 underline;
+    }
+    &:focus-visible {
+      @apply outline-2 outline-offset-2;
+      outline-color: rgb(var(--color-primary));
+    }
+  }
+}
+
+@layer components {
+  /* 🎨 Botones mejorados */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 font-medium transition-all shadow-md;
+    
+    &--primary {
+      @apply bg-primary text-white hover:bg-opacity-90 focus:ring-2 focus:ring-primary/50;
+    }
+    
+    &--outline {
+      @apply border-2 border-primary text-primary hover:bg-primary/10;
+    }
+    
+    &--secondary {
+      @apply bg-secondary text-white hover:bg-opacity-90 focus:ring-2 focus:ring-secondary/50;
+    }
+    
+    &--disabled {
+      @apply bg-gray-300 text-gray-500 cursor-not-allowed;
+    }
+  }
+
+  /* 📦 Tarjetas reutilizables */
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 transition-all duration-300 hover:shadow-lg;
+  }
+
+  /* 🏷 Etiquetas / Badges */
+  .badge {
+    @apply inline-block px-3 py-1 text-xs font-semibold rounded-full;
+    
+    &--primary {
+      @apply bg-primary text-white;
+    }
+
+    &--secondary {
+      @apply bg-secondary text-white;
+    }
+
+    &--accent {
+      @apply bg-accent text-white;
+    }
+  }
+}
+
+@layer utilities {
+  /* 🌈 Clases de color */
+  .bg-bg {
+    background-color: rgb(var(--color-bg));
+  }
+  
+  .text-text {
+    color: rgb(var(--color-text));
+  }
+  
+  .text-primary {
+    color: rgb(var(--color-primary));
+  }
+  
+  .bg-primary {
+    background-color: rgb(var(--color-primary));
+  }
+  
+  .border-primary {
+    border-color: rgb(var(--color-primary));
+  }
+
+  /* 📏 Espaciado global */
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}

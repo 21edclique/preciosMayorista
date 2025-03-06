@@ -1,0 +1,138 @@
+/* ==== Estilos Generales ==== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  body {
+    background-color: #f3f4f6; /* Gris claro */
+    color: #1f2937; /* Gris oscuro */
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  /* Modo oscuro */
+  .dark body {
+    background-color: #111827;
+    color: #f9fafb;
+  }
+  
+  /* ==== Contenedor Principal ==== */
+  .flex {
+    display: flex;
+  }
+  
+  .h-screen {
+    height: 100vh;
+  }
+  
+  .transition-colors {
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  /* ==== Sidebar ==== */
+  .sidebar {
+    width: 16rem;
+    background-color: #1f2937; /* Gris oscuro */
+    color: white;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
+    transition: width 0.3s ease-in-out;
+  }
+  
+  .sidebar.closed {
+    width: 4rem;
+  }
+  
+  .sidebar .logo {
+    text-align: center;
+    padding: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    padding: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .sidebar ul li:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* ==== Navbar ==== */
+  .navbar {
+    width: 100%;
+    background-color: #ffffff;
+    padding: 1rem;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s;
+  }
+  
+  .dark .navbar {
+    background-color: #1f2937;
+  }
+  
+  /* Botón de logout */
+  .logout-button {
+    background-color: #ef4444; /* Rojo */
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .logout-button:hover {
+    background-color: #dc2626;
+  }
+  
+  /* ==== Contenido Principal ==== */
+  .main-content {
+    flex: 1;
+    margin-left: 16rem;
+    padding: 1.5rem;
+    transition: margin-left 0.3s ease-in-out;
+  }
+  
+  .main-content.collapsed {
+    margin-left: 4rem;
+  }
+  
+  /* ==== Responsividad ==== */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 4rem;
+    }
+  
+    .main-content {
+      margin-left: 4rem;
+    }
+  }
+
+  .main-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+  }
+  
+  .inner-container {
+    max-width: 800px; /* Centra y limita el ancho */
+    width: 100%;
+  }
+  
