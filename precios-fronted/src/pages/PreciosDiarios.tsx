@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import usePreciosDiarios from '../hooks/usePrecios';
 import useProductos from '../hooks/useProductos';
 import usePresentacion from '../hooks/usePresentacion';
-import { PDFDownloadLink, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
-import EpemaLogo from '../images/epema-logo.png';
-
+import { PDFDownloadLink, Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import headerImage from '../images/encabezado-precios.png';
+import Background from '../images/background.png';
 import {
   Container,
   Typography,
@@ -28,59 +28,70 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { es } from 'date-fns/locale';
 import PrintIcon from '@mui/icons-material/Print';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { Bold } from 'lucide-react';
 
 // Estilos exactos del PDF
+// Estilos del PDF
 const styles = StyleSheet.create({
   page: {
+    position: 'relative',
     padding: 20,
-    fontSize: 10,
+    fontSize: 12, // Ajustado a un tamaño más legible para texto general
     fontFamily: 'Helvetica',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    opacity: 0.2,
+  },
+  content: {
+    position: 'relative',
+    zIndex: 1,
   },
   title: {
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: 18, // Aumentado para el título
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  header: {
-    textAlign: 'center',
-    fontSize: 10,
-    marginBottom: 5,
+  headerImage: {
+    width: '100%',
   },
   table: {
     display: 'flex',
     width: '100%',
     borderCollapse: 'collapse',
+    backgroundColor: '#fff',
+    border: '1px solid #052935',
   },
   tableRow: {
     flexDirection: 'row',
     borderBottomWidth: 0.5,
-    borderBottomColor: '#000',
+    borderBottomColor: '#052935',
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#052935',
     borderBottomWidth: 0.5,
-    borderBottomColor: '#000',
+    borderBottomColor: '#052935',
   },
   tableCell: {
-    margin: 2,
-    padding: 2,
-    fontSize: 8,
+    margin: 1,
+    padding: 1,
+    fontSize: 10, // Aumentado para las celdas de la tabla
     textAlign: 'left',
   },
   headerCell: {
     margin: 2,
     padding: 2,
-    fontSize: 8,
+    fontSize: 12, // Aumentado para el encabezado de la tabla
     fontWeight: 'bold',
     textAlign: 'left',
+    color: '#fff',
   },
-  footer: {
-    fontSize: 8,
-    textAlign: 'center',
-    marginTop: 10,
-  }
 });
 
 // Interfaces
@@ -94,47 +105,50 @@ interface Precio {
   precio: number;
   fecha: string;
 }
-
+const pageSize = { width: 595, height: 1500 }; // Ancho A4 (595pt) y altura grande
 // Componente PDF completamente personalizado
+// Componente PDF
 const PreciosPDF: React.FC<{ precios: Precio[], fecha: string }> = ({ precios, fecha }) => (
   <Document>
-    <Page size="A4" style={styles.page}>
-      <Text style={styles.title}>REGISTRO DE PRECIOS</Text>
-      <Text style={styles.header}>FECHA DE REGISTRO: {fecha}</Text>
-      <Text style={styles.header}>INFORMACIÓN AL TELF.- FAX 032406940</Text>
-      <Text style={styles.header}>Código: EP-EMA-SGC-DC/REG01</Text>
+   <Page size={pageSize} style={styles.page}>
+      {/* Imagen de fondo */}
+      <Image src={Background} style={styles.backgroundImage} />
 
-      <View style={styles.table}>
-        <View style={styles.tableHeader}>
-          {['Nº', 'PRODUCTO', 'PRESENTACIÓN', 'PESO KILOS', 'PRECIOS'].map((header, index) => (
-            <Text key={index} style={{ ...styles.headerCell, width: index === 0 ? '5%' : '19%' }}>
-              {header}
-            </Text>
+      {/* Contenido superpuesto */}
+      <View style={styles.content}>
+             {/* Imagen de encabezado */}
+             <Image src={headerImage} style={styles.headerImage} />
+
+        <View style={styles.table}>
+          <View style={styles.tableHeader}>
+            {['Nº', 'PRODUCTO', 'PRESENTACIÓN', 'PESO KILOS', 'PRECIOS'].map((header, index) => (
+              <Text key={index} style={{ ...styles.headerCell, width: index === 0 ? '5%' : '23%' }}>
+                {header}
+              </Text>
+            ))}
+          </View>
+
+          {precios.map((precio, index) => (
+            <View key={precio.id} style={styles.tableRow}>
+              <Text style={{ ...styles.tableCell, width: '5%' }}>{index + 1}</Text>
+              <Text style={{ ...styles.tableCell, width: '23%' }}>
+                {precio.producto?.nombre || 'Sin nombre'}
+              </Text>
+              <Text style={{ ...styles.tableCell, width: '23%' }}>
+                {precio.presentacion?.nombre || 'Sin presentación'}
+              </Text>
+              <Text style={{ ...styles.tableCell, width: '23%' }}>{precio.peso}</Text>
+              <Text style={{ ...styles.tableCell, width: '23%' }}>{precio.precio}</Text>
+            </View>
           ))}
         </View>
 
-        {precios.map((precio, index) => (
-          <View key={precio.id} style={styles.tableRow}>
-            <Text style={{ ...styles.tableCell, width: '5%' }}>{index + 1}</Text>
-            <Text style={{ ...styles.tableCell, width: '19%' }}>
-              {precio.producto?.nombre || 'Sin nombre'}
-            </Text>
-            <Text style={{ ...styles.tableCell, width: '19%' }}>
-              {precio.presentacion?.nombre || 'Sin presentación'}
-            </Text>
-            <Text style={{ ...styles.tableCell, width: '19%' }}>{precio.peso}</Text>
-            <Text style={{ ...styles.tableCell, width: '19%' }}>{precio.precio}</Text>
-          </View>
-        ))}
-      </View>
-
-      <View style={styles.footer}>
-        <Text>INFORMACIÓN AL TELF.- FAX 032406940</Text>
-        <Text>Código: EP-EMA-SGC-DC/REG01</Text>
+      
       </View>
     </Page>
   </Document>
 );
+
 
 const PreciosDiarios = () => {
   // Obtener el token de autenticación

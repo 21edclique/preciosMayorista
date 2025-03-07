@@ -7,6 +7,7 @@ const productosRoutes = require('./routes/productos');
 const preciosRoutes = require('./routes/precios');
 const rolesRoutes = require('./routes/roles');
 const presentacionRoutes = require('./routes/presentacion');
+const pdfRoutes = require('./routes/pdf ');
 
 const authMiddleware = require('./middlewares/authMiddleware');
 
@@ -21,7 +22,7 @@ app.use('/precios', authMiddleware, preciosRoutes);
 app.use('/usuarios', authMiddleware, usuariosRoutes); // Agregar ruta de usuarios
 app.use('/roles', authMiddleware, rolesRoutes); // Agregar ruta de roles
 app.use('/presentacion', authMiddleware, presentacionRoutes); // Agregar ruta de presentacion   
-
+app.use('/pdf', authMiddleware,pdfRoutes);
 
 
 const PORT = 5001;

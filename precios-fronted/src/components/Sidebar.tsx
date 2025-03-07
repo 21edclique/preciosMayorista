@@ -75,7 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userData, isOpen, toggleSidebar }) =>
           <ul className="space-y-4 font-medium">
             <SidebarItem to="/home" icon={FcRules} label="Dashboard" collapsed={isCollapsed} isActive={location.pathname === "/home"} />
             <SidebarItem to="/productos" icon={FcStackOfPhotos} label="Productos" collapsed={isCollapsed} isActive={location.pathname === "/productos"} />
-            <SidebarItem to="/precios" icon={FcCurrencyExchange} label=" Regsitro de Precios" collapsed={isCollapsed} isActive={location.pathname === "/precios"} />
+            <SidebarItem to="/precios" icon={FcCurrencyExchange} label=" Registro de Precios" collapsed={isCollapsed} isActive={location.pathname === "/precios"} />
             <SidebarItem to="/preciosDiarios" icon={FcSurvey} label="Reporte Precios" collapsed={isCollapsed} isActive={location.pathname === "/preciosDiarios"} />
            
             {userData?.id_rol === 1 && (
