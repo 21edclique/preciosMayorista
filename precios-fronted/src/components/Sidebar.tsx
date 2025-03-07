@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FcRules } from "react-icons/fc";
-import { FcKindle, FcBusinessman, FcStatistics } from "react-icons/fc";
 import { FiX } from "react-icons/fi";
 import { FcStackOfPhotos } from "react-icons/fc";
 import { FcGoodDecision } from "react-icons/fc";
-import { FcCalculator } from "react-icons/fc";
 import { FcCurrencyExchange } from "react-icons/fc";
 import { FcSurvey } from "react-icons/fc";
-
+import { FcPackage } from "react-icons/fc";
 interface SidebarItemProps {
   to: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -75,7 +73,8 @@ const Sidebar: React.FC<SidebarProps> = ({ userData, isOpen, toggleSidebar }) =>
           <ul className="space-y-4 font-medium">
             <SidebarItem to="/home" icon={FcRules} label="Dashboard" collapsed={isCollapsed} isActive={location.pathname === "/home"} />
             <SidebarItem to="/productos" icon={FcStackOfPhotos} label="Productos" collapsed={isCollapsed} isActive={location.pathname === "/productos"} />
-            <SidebarItem to="/precios" icon={FcCurrencyExchange} label=" Registro de Precios" collapsed={isCollapsed} isActive={location.pathname === "/precios"} />
+            <SidebarItem to="/presentacion" icon={FcPackage} label="Presentaciones" collapsed={isCollapsed} isActive={location.pathname === "/presentacion"} />
+            <SidebarItem to="/precios" icon={FcCurrencyExchange} label=" Registro de Precios" collapsed={isCollapsed} isActive={location.pathname === "/registroPrecios"} />
             <SidebarItem to="/preciosDiarios" icon={FcSurvey} label="Reporte Precios" collapsed={isCollapsed} isActive={location.pathname === "/preciosDiarios"} />
            
             {userData?.id_rol === 1 && (

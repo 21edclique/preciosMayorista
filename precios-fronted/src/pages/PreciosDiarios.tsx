@@ -28,15 +28,13 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { es } from 'date-fns/locale';
 import PrintIcon from '@mui/icons-material/Print';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import { Bold } from 'lucide-react';
 
-// Estilos exactos del PDF
 // Estilos del PDF
 const styles = StyleSheet.create({
   page: {
     position: 'relative',
     padding: 20,
-    fontSize: 12, // Ajustado a un tamaño más legible para texto general
+    fontSize: 12,
     fontFamily: 'Helvetica',
   },
   backgroundImage: {
@@ -53,12 +51,13 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    fontSize: 18, // Aumentado para el título
+    fontSize: 15,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 0,
   },
   headerImage: {
     width: '100%',
+    marginBottom: 0,
   },
   table: {
     display: 'flex',
@@ -69,29 +68,38 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: 'row',
-    borderBottomWidth: 0.5,
+    borderBottomWidth: 1,
     borderBottomColor: '#052935',
+    backgroundColor: '#fff',
+    borderBottomStyle: 'solid',
   },
   tableHeader: {
     flexDirection: 'row',
     backgroundColor: '#052935',
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#052935',
+    borderBottomWidth: 1,
+    borderBottomColor: '#fff',
+    borderBottomStyle: 'solid',
   },
   tableCell: {
-    margin: 1,
-    padding: 1,
-    fontSize: 10, // Aumentado para las celdas de la tabla
+    margin: 4,
+    padding: 4,
+    fontSize: 10,
     textAlign: 'left',
   },
   headerCell: {
-    margin: 2,
-    padding: 2,
-    fontSize: 12, // Aumentado para el encabezado de la tabla
+    margin: 4,
+    padding: 4,
+    fontSize: 12,
     fontWeight: 'bold',
     textAlign: 'left',
     color: '#fff',
   },
+  footer: {
+    marginTop: 20,
+    fontSize: 12,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  }
 });
 
 // Interfaces
@@ -105,50 +113,56 @@ interface Precio {
   precio: number;
   fecha: string;
 }
-const pageSize = { width: 595, height: 1500 }; // Ancho A4 (595pt) y altura grande
-// Componente PDF completamente personalizado
+
+const pageSize = { width: 595, height: 2700
+ }; // Ancho A4 (595pt) y altura grande
+
 // Componente PDF
 const PreciosPDF: React.FC<{ precios: Precio[], fecha: string }> = ({ precios, fecha }) => (
   <Document>
-   <Page size={pageSize} style={styles.page}>
+    <Page size={pageSize} style={styles.page}>
       {/* Imagen de fondo */}
       <Image src={Background} style={styles.backgroundImage} />
 
       {/* Contenido superpuesto */}
       <View style={styles.content}>
-             {/* Imagen de encabezado */}
-             <Image src={headerImage} style={styles.headerImage} />
+        {/* Imagen de encabezado */}
+        <Image src={headerImage} style={styles.headerImage} />
 
         <View style={styles.table}>
           <View style={styles.tableHeader}>
-            {['Nº', 'PRODUCTO', 'PRESENTACIÓN', 'PESO KILOS', 'PRECIOS'].map((header, index) => (
-              <Text key={index} style={{ ...styles.headerCell, width: index === 0 ? '5%' : '23%' }}>
-                {header}
-              </Text>
-            ))}
+            <Text style={{ ...styles.headerCell, width: '5%' }}>Nº</Text>
+            <Text style={{ ...styles.headerCell, width: '35%' }}>PRODUCTO</Text>
+            <Text style={{ ...styles.headerCell, width: '25%' }}>PRESENTACIÓN</Text>
+            <Text style={{ ...styles.headerCell, width: '15%' }}>PESO KILOS</Text>
+            <Text style={{ ...styles.headerCell, width: '20%' }}>PRECIOS</Text>
           </View>
 
           {precios.map((precio, index) => (
-            <View key={precio.id} style={styles.tableRow}>
+            <View key={precio.id} style={{
+              ...styles.tableRow,
+              backgroundColor: index % 2 === 0 ? '#f5f5f5' : '#fff'
+            }}>
               <Text style={{ ...styles.tableCell, width: '5%' }}>{index + 1}</Text>
-              <Text style={{ ...styles.tableCell, width: '23%' }}>
+              <Text style={{ ...styles.tableCell, width: '35%' }}>
                 {precio.producto?.nombre || 'Sin nombre'}
               </Text>
-              <Text style={{ ...styles.tableCell, width: '23%' }}>
+              <Text style={{ ...styles.tableCell, width: '25%' }}>
                 {precio.presentacion?.nombre || 'Sin presentación'}
               </Text>
-              <Text style={{ ...styles.tableCell, width: '23%' }}>{precio.peso}</Text>
-              <Text style={{ ...styles.tableCell, width: '23%' }}>{precio.precio}</Text>
+              <Text style={{ ...styles.tableCell, width: '15%' }}>{precio.peso}</Text>
+              <Text style={{ ...styles.tableCell, width: '20%' }}>{precio.precio}</Text>
             </View>
           ))}
         </View>
 
-      
+        <View style={styles.footer}>
+          <Text>FECHA DE REGISTRO: {fecha}</Text>
+        </View>
       </View>
     </Page>
   </Document>
 );
-
 
 const PreciosDiarios = () => {
   // Obtener el token de autenticación
@@ -249,11 +263,11 @@ const PreciosDiarios = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
+      <Typography variant="h4" component="h1" gutterBottom sx={{ color: '#052935', fontWeight: 'bold' }}>
         Precios Diarios
       </Typography>
 
-      <Paper sx={{ p: 3, mb: 3 }}>
+      <Paper sx={{ p: 3, mb: 3, boxShadow: 3 }}>
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} md={6}>
             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
@@ -266,7 +280,7 @@ const PreciosDiarios = () => {
                   textField: {
                     fullWidth: true,
                     InputProps: {
-                      startAdornment: <CalendarTodayIcon />
+                      startAdornment: <CalendarTodayIcon sx={{ mr: 1, color: '#052935' }} />
                     },
                   },
                 }}
@@ -287,7 +301,12 @@ const PreciosDiarios = () => {
               {({ loading }) => (
                 <Button
                   variant="contained"
-                  color="primary"
+                  sx={{
+                    backgroundColor: '#052935',
+                    '&:hover': {
+                      backgroundColor: '#0a4f65',
+                    },
+                  }}
                   startIcon={<PrintIcon />}
                   disabled={loading || filteredPrecios.length === 0}
                 >
@@ -299,35 +318,71 @@ const PreciosDiarios = () => {
         </Grid>
       </Paper>
 
-      <Typography variant="h6" gutterBottom>
+      <Typography 
+        variant="h6" 
+        gutterBottom 
+        sx={{ 
+          fontWeight: 'bold', 
+          color: '#052935',
+          backgroundColor: '#f5f5f5',
+          padding: 2,
+          borderRadius: 1
+        }}
+      >
         {`FECHA DE REGISTRO: ${formatDisplayDate(fecha)}`}
       </Typography>
 
-      <TableContainer component={Paper} sx={{ mb: 4 }}>
+      <TableContainer 
+        component={Paper} 
+        sx={{ 
+          mb: 4,
+          boxShadow: 3,
+          borderRadius: 2,
+          overflow: 'hidden'
+        }}
+      >
         <Table>
           <TableHead>
-            <TableRow>
-              {['Nº', 'PRODUCTO', 'PRESENTACIÓN', 'PESO KILOS', 'PRECIOS'].map((header) => (
-                <TableCell key={header} sx={{ fontWeight: 'bold', fontSize: '0.8rem' }}>
-                  {header}
-                </TableCell>
-              ))}
+            <TableRow sx={{ backgroundColor: '#052935' }}>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'white', width: '5%' }}>
+                Nº
+              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'white', width: '35%' }}>
+                PRODUCTO
+              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'white', width: '25%' }}>
+                PRESENTACIÓN
+              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'white', width: '15%' }}>
+                PESO KILOS
+              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'white', width: '20%' }}>
+                PRECIOS
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredPrecios.length > 0 ? (
               preciosConNombres.map((precio, index) => (
-                <TableRow key={precio.id}>
-                  <TableCell sx={{ fontSize: '0.8rem' }}>{index + 1}</TableCell>
-                  <TableCell sx={{ fontSize: '0.8rem' }}>{precio.producto.nombre}</TableCell>
-                  <TableCell sx={{ fontSize: '0.8rem' }}>{precio.presentacion.nombre}</TableCell>
-                  <TableCell sx={{ fontSize: '0.8rem' }}>{precio.peso}</TableCell>
-                  <TableCell sx={{ fontSize: '0.8rem' }}>{precio.precio}</TableCell>
+                <TableRow 
+                  key={precio.id}
+                  sx={{ 
+                    backgroundColor: index % 2 === 0 ? '#f5f5f5' : 'white',
+                    '&:hover': {
+                      backgroundColor: '#e3f2fd',
+                    },
+                  }}
+                >
+                  <TableCell sx={{ fontSize: '0.9rem', borderBottom: '1px solid #ccc' }}>{index + 1}</TableCell>
+                  <TableCell sx={{ fontSize: '0.9rem', fontWeight: 500, borderBottom: '1px solid #ccc' }}>{precio.producto.nombre}</TableCell>
+                  <TableCell sx={{ fontSize: '0.9rem', borderBottom: '1px solid #ccc' }}>{precio.presentacion.nombre}</TableCell>
+                  <TableCell sx={{ fontSize: '0.9rem', borderBottom: '1px solid #ccc' }}>{precio.peso}</TableCell>
+                  <TableCell sx={{ fontSize: '0.9rem', fontWeight: 'bold', borderBottom: '1px solid #ccc' }}>{precio.precio}</TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} align="center" sx={{ fontSize: '0.8rem' }}>
+                <TableCell colSpan={5} align="center" sx={{ fontSize: '0.9rem', py: 3 }}>
                   No hay precios registrados para esta fecha
                 </TableCell>
               </TableRow>

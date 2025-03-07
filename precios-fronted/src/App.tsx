@@ -3,13 +3,13 @@ import { HashRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 import Home from './pages/Home'
-import Bitacoras from './pages/Bitacoras'
 import Productos from './pages/Productos'
 import Login from './pages/Login'
 import Usuarios from './pages/Usuarios'
+import PresentacionesAdmin from './pages/Presentacion'
 import './App.css'
 import PreciosDiarios from './pages/PreciosDiarios'
-import Precios from './pages/precios'
+import Precios from './pages/RegistroPrecios'
 const App: React.FC = () => {
   const [userData, setUserData] = useState<{ id_rol: number; nombres: string } | null>(null)
 
@@ -105,6 +105,7 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/home" element={<Home />} />
               <Route path="/productos" element={<Productos />} />
+              <Route path="/presentacion" element={<PresentacionesAdmin />} />
               <Route path="/preciosDiarios" element={<PreciosDiarios />} />
               <Route path="/precios" element={<Precios />} />
               <Route

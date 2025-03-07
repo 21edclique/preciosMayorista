@@ -57,9 +57,12 @@ const PreciosDiariosBatchEdit = () => {
     guardarPrecio: actualizarPrecio,
   } = usePreciosDiarios(token || '');
 
-  const { productos, loading: loadingProductos } = useProductos();
-  const { presentacion, loading: loadingPresentacion } = usePresentacion();
-
+  const { productos, loading: getProductosActivos } = useProductos();
+  const { presentacion, loading: getPresentacionesActivos } = usePresentacion();
+  const productosActivos = productos.filter(producto => producto.estado === "1");
+  const presentacionesActivas = presentacion.filter(pres => pres.estado === "1");
+  
+  // Then use productosActivos and presentacionesActivas in your Select components
   const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date());
   const [preciosEditables, setPreciosEditables] = useState<PrecioEditable[]>([]);
   const [cambiosPendientes, setCambiosPendientes] = useState(false);
@@ -213,7 +216,7 @@ const PreciosDiariosBatchEdit = () => {
   };
 
   // Manejo de estados de carga y error
-  if (loading || loadingProductos || loadingPresentacion) {
+  if (loading || getPresentacionesActivos || getProductosActivos) {
     return (
       <Container sx={{ 
         display: 'flex', 
@@ -296,7 +299,7 @@ const PreciosDiariosBatchEdit = () => {
                           handleFieldChange(precio.id, 'producto_id', Number(e.target.value))
                         }
                       >
-                        {productos.map((producto) => (
+                        {productosActivos.map((producto) => (
                           <MenuItem key={producto.id} value={producto.id}>
                             {producto.nombre}
                           </MenuItem>
@@ -311,7 +314,7 @@ const PreciosDiariosBatchEdit = () => {
                           handleFieldChange(precio.id, 'id_presentacion_per', Number(e.target.value))
                         }
                       >
-                        {presentacion.map((pres) => (
+                        {presentacionesActivas.map((pres) => (
                           <MenuItem key={pres.id_presentacion} value={pres.id_presentacion}>
                             {pres.nombre}
                           </MenuItem>

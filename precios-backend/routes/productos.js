@@ -4,7 +4,15 @@ const db = require('../db/db');
 
 // Obtener todos los productos
 router.get('/', (req, res) => {
-    db.query('SELECT * FROM productos', (err, results) => {
+    db.query('SELECT * FROM productos ', (err, results) => {
+        if (err) return res.status(500).json({ error: err });
+        res.json(results);
+    });
+});
+
+// Obtener todos los productos activos
+router.get('/activo', (req, res) => {
+    db.query('SELECT * FROM productos WHERE estado = 1', (err, results) => {
         if (err) return res.status(500).json({ error: err });
         res.json(results);
     });
@@ -43,7 +51,7 @@ router.put('/:id', (req, res) => {
 
 
 // Ruta para cambiar el estado de un producto
-router.put('/:id/estado', (req, res) => {
+router.put('/estado/:id', (req, res) => {
     const { id } = req.params;
     const { estado } = req.body;
   

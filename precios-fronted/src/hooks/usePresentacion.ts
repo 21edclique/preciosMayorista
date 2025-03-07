@@ -5,10 +5,11 @@ import { API_URL } from '../config/index'
 interface Presentacion {
   id_presentacion: number
   nombre: string
+  estado: string
 }
 
 const usePresentacion = () => {
-  const [presentacion, setpresentacion] = useState<Presentacion[]>([])
+  const [presentacion, setPresentacion] = useState<Presentacion[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -22,7 +23,7 @@ const usePresentacion = () => {
           Authorization: `Bearer ${token}`,
         },
       })
-      setpresentacion(response.data)
+      setPresentacion(response.data)
     } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 401) {
@@ -38,6 +39,33 @@ const usePresentacion = () => {
     }
   }
 
+// 🔹 Obtener prresentaciones activas
+const getPresentacionesActivos = async () => {
+  setLoading(true);
+  try {
+    const token = localStorage.getItem('token'); // Obtén el token de autenticación
+    const response = await axios.get(`${API_URL}/presentacion/activo`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setPresentacion(response.data);
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      if (err.response?.status === 401) {
+        setError('No autorizado. Por favor, inicia sesión.');
+      } else {
+        setError(err.message);
+      }
+    } else if (err instanceof Error) {
+      setError(err.message);
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
+
   // 🔹 Crear Presentacion
   const crearPresentacion = async (nombre: string, estado: string) => {
     try {
@@ -52,7 +80,7 @@ const usePresentacion = () => {
           },
         },
       )
-      setpresentacion([...presentacion, response.data])
+      setPresentacion([...presentacion, response.data])
     } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 401) {
@@ -79,7 +107,7 @@ const usePresentacion = () => {
           },
         },
       )
-      setpresentacion(
+      setPresentacion(
         presentacion.map((p) => (p.id_presentacion === id_presentacion ? { ...p, nombre } : p)),
       )
     } catch (err) {
@@ -106,7 +134,7 @@ const usePresentacion = () => {
           Authorization: `Bearer ${token}`,
         },
       })
-      setpresentacion(presentacion.filter((p) => p.id_presentacion !== id_presentacion))
+      setPresentacion(presentacion.filter((p) => p.id_presentacion !== id_presentacion))
     } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 401) {
@@ -120,9 +148,43 @@ const usePresentacion = () => {
     }
   }
 
+
+  const cambiarEstadoPresentacion = async (id_presentacion: number, nuevoEstado: string) => {
+    try {
+      const token = localStorage.getItem('token'); // Obtén el token de autenticación
+      await axios.put(
+        `${API_URL}/presentacion/estado/${id_presentacion}`,
+        { estado: nuevoEstado },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Actualizar el estado en la lista de productos
+      setPresentacion((prevPresentacion) =>
+        prevPresentacion.map((p) =>
+          p.id_presentacion === id_presentacion ? { ...p, estado: nuevoEstado } : p
+        )
+      );
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401) {
+          setError('No autorizado. Por favor, inicia sesión.');
+        } else {
+          setError(err.message);
+        }
+      } else if (err instanceof Error) {
+        setError(err.message);
+      }
+    }
+  };
+
+
+
   // Cargar presentacion al montar el hook
   useEffect(() => {
-    fetchpresentacion()
+    fetchpresentacion();
   }, [])
 
   return {
@@ -133,6 +195,8 @@ const usePresentacion = () => {
     crearPresentacion,
     actualizarPresentacion,
     eliminarPresentacion,
+    getPresentacionesActivos,
+    cambiarEstadoPresentacion
   }
 }
 

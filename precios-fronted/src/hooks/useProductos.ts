@@ -39,6 +39,34 @@ const useProductos = () => {
     }
   };
 
+// 🔹 Obtener productos
+const getProductosActivos = async () => {
+  setLoading(true);
+  try {
+    const token = localStorage.getItem('token'); // Obtén el token de autenticación
+    const response = await axios.get(`${API_URL}/productos/activo`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setProductos(response.data);
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      if (err.response?.status === 401) {
+        setError('No autorizado. Por favor, inicia sesión.');
+      } else {
+        setError(err.message);
+      }
+    } else if (err instanceof Error) {
+      setError(err.message);
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
  
  // 🔹 Crear producto 
 const crearProducto = async (nombre: string, estado: string) => {
@@ -101,7 +129,7 @@ const crearProducto = async (nombre: string, estado: string) => {
     try {
       const token = localStorage.getItem('token'); // Obtén el token de autenticación
       await axios.put(
-        `${API_URL}/productos/${id}/estado`,
+        `${API_URL}/productos/estado/${id}`,
         { estado: nuevoEstado },
         {
           headers: {
@@ -168,7 +196,8 @@ const crearProducto = async (nombre: string, estado: string) => {
     crearProducto,
     actualizarProducto,
     eliminarProducto,
-    cambiarEstadoProducto
+    cambiarEstadoProducto,
+    getProductosActivos
   };
 };
 
