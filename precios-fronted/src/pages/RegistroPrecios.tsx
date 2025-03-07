@@ -22,13 +22,17 @@ import {
   IconButton,
   Snackbar,
   Alert,
-  CircularProgress
+  CircularProgress,
+  createTheme,
+  ThemeProvider,
+  useMediaQuery,
+  CssBaseline
 } from '@mui/material';
 import { 
   Add as AddIcon, 
   Save as SaveIcon, 
   Delete as DeleteIcon, 
-  ArrowBack as BackIcon 
+  ArrowBack as BackIcon
 } from '@mui/icons-material';
 import { format, parseISO } from 'date-fns';
 
@@ -47,6 +51,28 @@ interface PrecioEditable {
 const PreciosDiariosBatchEdit = () => {
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const [darkMode, setDarkMode] = useState(prefersDarkMode);
+
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: darkMode ? 'dark' : 'light',
+          primary: {
+            main: '#3f51b5',
+          },
+          secondary: {
+            main: '#f50057',
+          },
+          background: {
+            default: darkMode ? '#121212' : '#f5f5f5',
+            paper: darkMode ? '#1e1e1e' : '#ffffff',
+          },
+        },
+      }),
+    [darkMode],
+  );
 
   const {
     precios,
@@ -62,7 +88,6 @@ const PreciosDiariosBatchEdit = () => {
   const productosActivos = productos.filter(producto => producto.estado === "1");
   const presentacionesActivas = presentacion.filter(pres => pres.estado === "1");
   
-  // Then use productosActivos and presentacionesActivas in your Select components
   const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date());
   const [preciosEditables, setPreciosEditables] = useState<PrecioEditable[]>([]);
   const [cambiosPendientes, setCambiosPendientes] = useState(false);
@@ -73,7 +98,6 @@ const PreciosDiariosBatchEdit = () => {
     severity: 'success' as 'success' | 'error',
   });
 
-  // Funciones de obtención de nombres (igual que en el código original)
   const getProductoNombre = (id: number): string => {
     const producto = productos.find((p) => p.id === id);
     return producto ? producto.nombre : 'Desconocido';
@@ -84,7 +108,6 @@ const PreciosDiariosBatchEdit = () => {
     return pres ? pres.nombre : 'Desconocida';
   };
 
-  // Resto de la lógica de manejo de precios igual que en el código original
   const fechaMasReciente = () => {
     if (precios.length > 0) {
       const fechas = precios.map((p) => parseISO(p.fecha).getTime());
@@ -113,7 +136,6 @@ const PreciosDiariosBatchEdit = () => {
     }
   }, [precios, productos, presentacion]);
 
-  // Manejadores (mantienen la misma lógica)
   const handleDateChange = (newDate: Date) => {
     setFechaSeleccionada(newDate);
     const formattedDate = format(newDate, 'yyyy-MM-dd');
@@ -215,184 +237,215 @@ const PreciosDiariosBatchEdit = () => {
     }
   };
 
-  // Manejo de estados de carga y error
+  // Render loading state
   if (loading || getPresentacionesActivos || getProductosActivos) {
     return (
-      <Container sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh' 
-      }}>
-        <CircularProgress />
-      </Container>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <div className={darkMode ? 'dark:bg-gray-900 min-h-screen flex justify-center items-center' : ''}>
+          <Container sx={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            height: '100vh' 
+          }}>
+            <CircularProgress />
+          </Container>
+        </div>
+      </ThemeProvider>
     );
   }
 
+  // Render error state
   if (error) {
     return (
-      <Container sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh' 
-      }}>
-        <Alert severity="error">{error}</Alert>
-      </Container>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <div className={darkMode ? 'dark:bg-gray-900 min-h-screen flex justify-center items-center' : ''}>
+          <Container sx={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            height: '100vh' 
+          }}>
+            <Alert severity="error">{error}</Alert>
+          </Container>
+        </div>
+      </ThemeProvider>
     );
   }
 
+  // Main component render
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Box display="flex" alignItems="center" mb={3}>
-        <IconButton onClick={() => navigate('/precios-diarios')} sx={{ mr: 2 }}>
-          <BackIcon />
-        </IconButton>
-        <Typography variant="h4" component="h1" fontWeight="bold">
-          Edición por lotes de Precios Diarios
-        </Typography>
-      </Box>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <div className={darkMode ? 'dark:bg-gray-900 min-h-screen' : ''}>
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
+            <Box display="flex" alignItems="center">
+              <IconButton onClick={() => navigate('/precios-diarios')} sx={{ mr: 2 }} className={darkMode ? 'dark:text-gray-200' : ''}>
+                <BackIcon />
+              </IconButton>
+              <Typography variant="h4" component="h1" fontWeight="bold" className={darkMode ? 'dark:text-gray-200' : ''}>
+                Edición por lotes de Precios Diarios
+              </Typography>
+            </Box>
+          </Box>
 
-      <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <TextField
-            type="date"
-            label="Fecha de Precios"
-            InputLabelProps={{ shrink: true }}
-            value={format(fechaSeleccionada, 'yyyy-MM-dd')}
-            onChange={(e) => handleDateChange(new Date(e.target.value))}
-            sx={{ width: 200 }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<SaveIcon />}
-            onClick={handleSaveAll}
-            disabled={guardando || !cambiosPendientes}
-          >
-            {guardando ? 'Guardando...' : 'Guardar Todos'}
-          </Button>
-        </Box>
+          <Paper elevation={3} sx={{ p: 3, mb: 3 }} className={darkMode ? 'dark:bg-gray-800' : ''}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <TextField
+                type="date"
+                label="Fecha de Precios"
+                InputLabelProps={{ shrink: true }}
+                value={format(fechaSeleccionada, 'yyyy-MM-dd')}
+                onChange={(e) => handleDateChange(new Date(e.target.value))}
+                sx={{ width: 200 }}
+                className={darkMode ? 'dark:text-gray-200' : ''}
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<SaveIcon />}
+                onClick={handleSaveAll}
+                disabled={guardando || !cambiosPendientes}
+              >
+                {guardando ? 'Guardando...' : 'Guardar Todos'}
+              </Button>
+            </Box>
 
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-              <TableCell>Nº</TableCell>
-                <TableCell>PRODUCTO</TableCell>
-                <TableCell>PRESENTACIÓN</TableCell>
-                <TableCell>PESO KILOS</TableCell>
-                <TableCell>PRECIOS</TableCell>
-                <TableCell align="right">ACCIONES</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {preciosEditables.length > 0 ? (
-                preciosEditables.map((precio, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>
-                      <Select
-                        fullWidth
-                        value={precio.producto_id}
-                        onChange={(e) =>
-                          handleFieldChange(precio.id, 'producto_id', Number(e.target.value))
-                        }
-                      >
-                        {productosActivos.map((producto) => (
-                          <MenuItem key={producto.id} value={producto.id}>
-                            {producto.nombre}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </TableCell>
-                    <TableCell>
-                      <Select
-                        fullWidth
-                        value={precio.id_presentacion_per}
-                        onChange={(e) =>
-                          handleFieldChange(precio.id, 'id_presentacion_per', Number(e.target.value))
-                        }
-                      >
-                        {presentacionesActivas.map((pres) => (
-                          <MenuItem key={pres.id_presentacion} value={pres.id_presentacion}>
-                            {pres.nombre}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        type="number"
-                        fullWidth
-                        value={precio.peso ?? 0}
-                        onChange={(e) =>
-                          handleFieldChange(precio.id, 'peso', parseFloat(e.target.value))
-                        }
-                        inputProps={{ step: 0.1, min: 0 }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        type="number"
-                        fullWidth
-                        value={precio.precio ?? 0}
-                        onChange={(e) =>
-                          handleFieldChange(precio.id, 'precio', parseFloat(e.target.value))
-                        }
-                        InputProps={{
-                          startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                          inputProps: { step: 0.01, min: 0 }
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell align="right">
-                      <IconButton 
-                        color="error" 
-                        onClick={() => handleRemovePrice(index)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
+            <TableContainer className={darkMode ? 'dark:bg-gray-800' : ''}>
+              <Table>
+                <TableHead>
+                  <TableRow className={darkMode ? 'dark:bg-gray-700' : ''}>
+                    <TableCell className={darkMode ? 'dark:text-gray-200 dark:border-gray-700' : ''}>Nº</TableCell>
+                    <TableCell className={darkMode ? 'dark:text-gray-200 dark:border-gray-700' : ''}>PRODUCTO</TableCell>
+                    <TableCell className={darkMode ? 'dark:text-gray-200 dark:border-gray-700' : ''}>PRESENTACIÓN</TableCell>
+                    <TableCell className={darkMode ? 'dark:text-gray-200 dark:border-gray-700' : ''}>PESO KILOS</TableCell>
+                    <TableCell className={darkMode ? 'dark:text-gray-200 dark:border-gray-700' : ''}>PRECIOS</TableCell>
+                    <TableCell align="right" className={darkMode ? 'dark:text-gray-200 dark:border-gray-700' : ''}>ACCIONES</TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} align="center">
-                    No hay precios cargados. Agrega uno nuevo.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {preciosEditables.length > 0 ? (
+                    preciosEditables.map((precio, index) => (
+                      <TableRow key={index} className={darkMode ? 'dark:bg-gray-800 dark:hover:bg-gray-700' : ''}>
+                        <TableCell className={darkMode ? 'dark:text-gray-200 dark:border-gray-700' : ''}>{index + 1}</TableCell>
+                        <TableCell className={darkMode ? 'dark:border-gray-700' : ''}>
+                          <Select
+                            fullWidth
+                            value={precio.producto_id}
+                            onChange={(e) =>
+                              handleFieldChange(precio.id, 'producto_id', Number(e.target.value))
+                            }
+                            className={darkMode ? 'dark:text-gray-200 dark:bg-gray-700' : ''}
+                          >
+                            {productosActivos.map((producto) => (
+                              <MenuItem key={producto.id} value={producto.id} className={darkMode ? 'dark:text-gray-200 dark:bg-gray-700' : ''}>
+                                {producto.nombre}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </TableCell>
+                        <TableCell className={darkMode ? 'dark:border-gray-700' : ''}>
+                          <Select
+                            fullWidth
+                            value={precio.id_presentacion_per}
+                            onChange={(e) =>
+                              handleFieldChange(precio.id, 'id_presentacion_per', Number(e.target.value))
+                            }
+                            className={darkMode ? 'dark:text-gray-200 dark:bg-gray-700' : ''}
+                          >
+                            {presentacionesActivas.map((pres) => (
+                              <MenuItem key={pres.id_presentacion} value={pres.id_presentacion} className={darkMode ? 'dark:text-gray-200 dark:bg-gray-700' : ''}>
+                                {pres.nombre}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </TableCell>
+                        <TableCell className={darkMode ? 'dark:border-gray-700' : ''}>
+                          <TextField
+                            type="number"
+                            fullWidth
+                            value={precio.peso ?? 0}
+                            onChange={(e) =>
+                              handleFieldChange(precio.id, 'peso', parseFloat(e.target.value))
+                            }
+                            inputProps={{ step: 0.1, min: 0 }}
+                            className={darkMode ? 'dark:text-gray-200 dark:bg-gray-700' : ''}
+                            InputProps={{
+                              className: darkMode ? 'dark:text-gray-200' : ''
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell className={darkMode ? 'dark:border-gray-700' : ''}>
+                          <TextField
+                            type="number"
+                            fullWidth
+                            value={precio.precio ?? 0}
+                            onChange={(e) =>
+                              handleFieldChange(precio.id, 'precio', parseFloat(e.target.value))
+                            }
+                            InputProps={{
+                              startAdornment: <InputAdornment position="start" className={darkMode ? 'dark:text-gray-200' : ''}>$</InputAdornment>,
+                              inputProps: { step: 0.01, min: 0 },
+                              className: darkMode ? 'dark:text-gray-200' : ''
+                            }}
+                            className={darkMode ? 'dark:text-gray-200 dark:bg-gray-700' : ''}
+                          />
+                        </TableCell>
+                        <TableCell align="right" className={darkMode ? 'dark:border-gray-700' : ''}>
+                          <IconButton 
+                            color="error" 
+                            onClick={() => handleRemovePrice(index)}
+                            className={darkMode ? 'dark:text-red-400' : ''}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow className={darkMode ? 'dark:bg-gray-800' : ''}>
+                      <TableCell colSpan={6} align="center" className={darkMode ? 'dark:text-gray-200 dark:border-gray-700' : ''}>
+                        No hay precios cargados. Agrega uno nuevo.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
 
-        <Box display="flex" justifyContent="flex-end" mt={2}>
-          <Button
-            variant="outlined"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={handleAddNewPrice}
+            <Box display="flex" justifyContent="flex-end" mt={2}>
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<AddIcon />}
+                onClick={handleAddNewPrice}
+                className={darkMode ? 'dark:border-blue-500 dark:text-blue-400' : ''}
+              >
+                Agregar Precio
+              </Button>
+            </Box>
+          </Paper>
+
+          <Snackbar
+            open={snackbar.open}
+            autoHideDuration={6000}
+            onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           >
-            Agregar Precio
-          </Button>
-        </Box>
-      </Paper>
-
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert 
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-          severity={snackbar.severity}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Container>
+            <Alert 
+              onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+              severity={snackbar.severity}
+              className={darkMode ? 'dark:bg-gray-700 dark:text-gray-200' : ''}
+            >
+              {snackbar.message}
+            </Alert>
+          </Snackbar>
+        </Container>
+      </div>
+    </ThemeProvider>
   );
 };
 

@@ -21,7 +21,7 @@ export const useUsuarios = () => {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null); // Estado para mensajes de éxito
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [itemsPerPage] = useState<number>(3);
+  const [itemsPerPage] = useState<number>(4);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [currentUsuario, setCurrentUsuario] = useState<any>(null);

@@ -8,7 +8,7 @@ import Login from './pages/Login'
 import Usuarios from './pages/Usuarios'
 import PresentacionesAdmin from './pages/Presentacion'
 import './App.css'
-import PreciosDiarios from './pages/PreciosDiarios'
+import PreciosDiarios from './pages/ReportePrecios'
 import Precios from './pages/RegistroPrecios'
 const App: React.FC = () => {
   const [userData, setUserData] = useState<{ id_rol: number; nombres: string } | null>(null)

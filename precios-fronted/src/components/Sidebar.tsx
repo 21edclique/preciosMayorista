@@ -52,17 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userData, isOpen, toggleSidebar }) =>
 
   return (
     <>
-      {/* Botón para cerrar el menú en móviles */}
-      {/* {isOpen && (
-        <button
-          onClick={toggleSidebar}
-          className="fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-100 dark:bg-gray-800 lg:hidden"
-          aria-label="Cerrar menú"
-        >
-          <FiX className="w-6 h-6 text-gray-600 dark:text-gray-300" />
-        </button>
-      )} */}
-
+    
       {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 h-screen pt-20 bg-white dark:bg-gray-900 dark:border-gray-700 transition-all duration-300
@@ -75,7 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userData, isOpen, toggleSidebar }) =>
             <SidebarItem to="/productos" icon={FcStackOfPhotos} label="Productos" collapsed={isCollapsed} isActive={location.pathname === "/productos"} />
             <SidebarItem to="/presentacion" icon={FcPackage} label="Presentaciones" collapsed={isCollapsed} isActive={location.pathname === "/presentacion"} />
             <SidebarItem to="/precios" icon={FcCurrencyExchange} label=" Registro de Precios" collapsed={isCollapsed} isActive={location.pathname === "/registroPrecios"} />
-            <SidebarItem to="/preciosDiarios" icon={FcSurvey} label="Reporte Precios" collapsed={isCollapsed} isActive={location.pathname === "/preciosDiarios"} />
+            <SidebarItem to="/preciosDiarios" icon={FcSurvey} label="Reporte Precios" collapsed={isCollapsed} isActive={location.pathname === "/reportePrecios"} />
            
             {userData?.id_rol === 1 && (
               <SidebarItem to="/usuarios" icon={FcGoodDecision} label="Usuarios" collapsed={isCollapsed} isActive={location.pathname === "/usuarios"} />
