@@ -43,7 +43,6 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import html2canvas from 'html2canvas'
 import { fromUnixTime } from 'date-fns'
 
-// Estilos del PDF (omitidos por brevedad, ya los tienes en tu código)
 // Estilos del PDF
 const styles = StyleSheet.create({
   page: {
@@ -206,14 +205,26 @@ const PreciosDiarios = () => {
     fetchpresentacion()
   }, [])
 
-  // Filtrar precios por fecha seleccionada
+  // Filtrar precios por fecha seleccionada - CORREGIDO PARA SOLUCIONAR EL PROBLEMA DE ZONA HORARIA
   useEffect(() => {
     if (precios && precios.length > 0) {
-      const formattedDate = fecha.toISOString().split('T')[0]
+      // Crear fecha en formato YYYY-MM-DD sin conversión de zona horaria
+      const year = fecha.getFullYear();
+      const month = fecha.getMonth() + 1; // getMonth() devuelve 0-11
+      const day = fecha.getDate();
+      
+      // Crear cadena de fecha en formato YYYY-MM-DD
+      const formattedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      
+      console.log('Fecha seleccionada para filtrar:', formattedDate);
+      
       const filtered = precios.filter((precio) => {
-        return precio.fecha.split('T')[0] === formattedDate
-      })
-      setFilteredPrecios(filtered)
+        const precioDate = precio.fecha.split('T')[0];
+        console.log('Comparando con fecha de precio:', precioDate);
+        return precioDate === formattedDate;
+      });
+      
+      setFilteredPrecios(filtered);
     }
   }, [precios, fecha])
 
@@ -330,10 +341,10 @@ const PreciosDiarios = () => {
             font-weight: bold;
         }
         td {
-            padding: 4px 6px; /* Reduce aún más el espacio entre columnas */
+            padding: 4px 6px;
             border: 1px solid #ddd;
-            font-size: 22px; /* Aumenta el tamaño del texto */
-            font-weight: bold; /* Hace el texto negrita */
+            font-size: 22px;
+            font-weight: bold;
         }
         tr:nth-child(even) {
             background-color: #f2f2f2;
@@ -404,10 +415,6 @@ const PreciosDiarios = () => {
     </div>
 </body>
 </html>
-
-
-
-
       `
 
       // Crear un elemento HTML temporal
@@ -430,13 +437,11 @@ const PreciosDiarios = () => {
     }
   }
 
-  // Manejar estado de carga y error (omitido por brevedad, ya lo tienes en tu código)
-
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-<h1 className="text-3xl font-bold mb-4 text-[#052935] dark:text-white">
-  Precios Diarios
-</h1>
+      <h1 className="text-3xl font-bold mb-4 text-[#052935] dark:text-white">
+        Precios Diarios
+      </h1>
 
       <Paper sx={{ p: 3, mb: 3, boxShadow: 3 }}>
         <Grid container spacing={3} alignItems="center">

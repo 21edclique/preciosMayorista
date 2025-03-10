@@ -88,6 +88,7 @@ const PreciosDiariosBatchEdit = () => {
   const productosActivos = productos.filter(producto => producto.estado === "1");
   const presentacionesActivas = presentacion.filter(pres => pres.estado === "1");
   
+  // Inicializar con la fecha actual
   const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date());
   const [preciosEditables, setPreciosEditables] = useState<PrecioEditable[]>([]);
   const [cambiosPendientes, setCambiosPendientes] = useState(false);
@@ -119,20 +120,28 @@ const PreciosDiariosBatchEdit = () => {
 
   useEffect(() => {
     if (precios.length > 0 && productos.length > 0 && presentacion.length > 0) {
+      // Encontrar los precios más recientes para cargarlos como base
+      const fechaReciente = fechaMasReciente();
+      
       const preciosRecientes = precios.filter((p) => {
         const fechaPrecio = parseISO(p.fecha);
-        return fechaPrecio.getTime() === fechaMasReciente().getTime();
+        return fechaPrecio.getTime() === fechaReciente.getTime();
       });
+
+      // Aquí usamos la fecha actual (hoy) en lugar de la fecha más reciente
+      const fechaActual = new Date();
+      const fechaActualStr = format(fechaActual, 'yyyy-MM-dd');
 
       const editables = preciosRecientes.map((precio) => ({
         ...precio,
-        fecha: format(fechaMasReciente(), 'yyyy-MM-dd'),
+        fecha: fechaActualStr, // Usar la fecha actual para todos los precios
         esNuevo: false,
         productoNombre: getProductoNombre(precio.producto_id),
         presentacionNombre: getPresentacionNombre(precio.id_presentacion_per),
       }));
 
       setPreciosEditables(editables);
+      setFechaSeleccionada(fechaActual); // Establecer la fecha actual en el selector
     }
   }, [precios, productos, presentacion]);
 
@@ -178,14 +187,14 @@ const PreciosDiariosBatchEdit = () => {
 
   const handleAddNewPrice = () => {
     const nuevoPrecio: PrecioEditable = {
-      producto_id: productos.length > 0 ? productos[0].id : 0,
-      id_presentacion_per: presentacion.length > 0 ? presentacion[0].id_presentacion : 0,
+      producto_id: productosActivos.length > 0 ? productosActivos[0].id : 0,
+      id_presentacion_per: presentacionesActivas.length > 0 ? presentacionesActivas[0].id_presentacion : 0,
       precio: 0,
       peso: 0,
-      fecha: format(fechaSeleccionada, 'yyyy-MM-dd'),
+      fecha: format(new Date(), 'yyyy-MM-dd'), // Siempre usar la fecha actual
       esNuevo: true,
-      productoNombre: productos.length > 0 ? productos[0].nombre : 'Seleccione un producto',
-      presentacionNombre: presentacion.length > 0 ? presentacion[0].nombre : 'Seleccione una presentación',
+      productoNombre: productosActivos.length > 0 ? productosActivos[0].nombre : 'Seleccione un producto',
+      presentacionNombre: presentacionesActivas.length > 0 ? presentacionesActivas[0].nombre : 'Seleccione una presentación',
     };
     setPreciosEditables([...preciosEditables, nuevoPrecio]);
     setCambiosPendientes(true);
@@ -203,25 +212,37 @@ const PreciosDiariosBatchEdit = () => {
   const handleSaveAll = async () => {
     setGuardando(true);
     try {
+      // Siempre usar la fecha actual al guardar, independiente de lo que muestre el selector
+      const fechaActual = new Date();
+      const fechaActualStr = format(fechaActual, 'yyyy-MM-dd');
+      
       const nuevosPrecios = preciosEditables.filter((p) => p.esNuevo);
       const preciosExistentes = preciosEditables.filter((p) => !p.esNuevo);
   
       for (const precio of nuevosPrecios) {
         const { esNuevo, productoNombre, presentacionNombre, ...precioData } = precio;
-        const precioConId = { ...precioData, id: 0 };
+        const precioConId = { 
+          ...precioData, 
+          id: 0,
+          fecha: fechaActualStr  // Usar siempre la fecha actual
+        };
         await crearPrecio(precioConId);
       }
   
       for (const precio of preciosExistentes) {
         if (precio.id) {
           const { esNuevo, productoNombre, presentacionNombre, id, ...precioData } = precio;
-          await actualizarPrecio({ id, ...precioData });
+          await actualizarPrecio({ 
+            id,
+            ...precioData,
+            fecha: fechaActualStr  // Usar siempre la fecha actual
+          });
         }
       }
   
       setSnackbar({
         open: true,
-        message: 'Todos los precios han sido guardados exitosamente',
+        message: 'Todos los precios han sido guardados exitosamente con la fecha actual',
         severity: 'success',
       });
       setCambiosPendientes(false);
@@ -296,12 +317,14 @@ const PreciosDiariosBatchEdit = () => {
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
               <TextField
                 type="date"
-                label="Fecha de Precios"
+                label="Fecha de Precios (referencia)"
                 InputLabelProps={{ shrink: true }}
                 value={format(fechaSeleccionada, 'yyyy-MM-dd')}
                 onChange={(e) => handleDateChange(new Date(e.target.value))}
-                sx={{ width: 200 }}
+                sx={{ width: 250 }}
                 className={darkMode ? 'dark:text-gray-200' : ''}
+                disabled={true} // Opcionalmente deshabilitar si siempre se usa la fecha actual
+                helperText="Los precios siempre se guardarán con la fecha actual"
               />
               <Button
                 variant="contained"
