@@ -1,1 +1,60 @@
+🥕 preciosMayorista
+Proyecto para el registro y visualización de precios del mercado mayorista de Ambato, compuesto por una interfaz frontend desarrollada en React y un backend en Node.js.
 
+📦 Estructura del Proyecto
+bash
+Copiar
+Editar
+preciosMayorista/
+├── precios-frontend/     # Aplicación en React
+├── precios-backend/      # Servidor backend en Node.js
+└── README.md             # Documentación del proyecto
+🚀 Tecnologías Usadas
+Frontend: React, JavaScript, HTML, CSS
+
+Backend: Node.js, Express
+
+Base de datos: (especificar si usas MongoDB, MySQL, etc.)
+
+Control de versiones: Git y GitHub
+
+🔧 Instalación y ejecución
+1. Clona el repositorio
+bash
+Copiar
+Editar
+git clone https://github.com/tu-usuario/preciosMayorista.git
+cd preciosMayorista
+2. Inicia el Backend
+bash
+Copiar
+Editar
+cd precios-backend
+npm install
+node server.js
+3. Inicia el Frontend
+bash
+Copiar
+Editar
+cd precios-frontend
+npm install
+npm run dev
+📋 Funcionalidades
+Registro manual de precios por producto.
+
+Visualización de precios históricos.
+
+Soporte para múltiples categorías o tipos de productos.
+
+Interfaz amigable adaptada para usuarios del mercado.
+
+📍 Contexto del Proyecto
+Este sistema fue desarrollado con el fin de agilizar el control de precios en el mercado mayorista de Ambato, facilitando su ingreso diario por parte de los responsables y permitiendo consultas rápidas sobre el historial de productos.
+
+📌 Notas
+Asegúrate de que el backend esté corriendo antes de iniciar el frontend.
+
+Se puede adaptar fácilmente para otros mercados o ciudades.
+
+👨‍💻 Autor
+21ledclique
