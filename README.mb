@@ -1,28 +1,36 @@
-🥕 preciosMayorista
-Proyecto para el registro y visualización de precios del mercado mayorista de Ambato, compuesto por una interfaz frontend desarrollada en React y un backend en Node.js.
+# 🥕 preciosMayorista
 
-📦 Estructura del Proyecto
-bash
-Copiar
-Editar
+Proyecto para el **registro y visualización de precios** del mercado mayorista de **Ambato**, compuesto por una interfaz frontend desarrollada en **React + TypeScript + TailwindCSS** y un backend en **Node.js**.
+
+---
+
+## 📦 Estructura del Proyecto
+
 preciosMayorista/
-├── precios-frontend/     # Aplicación en React
-├── precios-backend/      # Servidor backend en Node.js
-└── README.md             # Documentación del proyecto
-🚀 Tecnologías Usadas
-Frontend: React, JavaScript, HTML, CSS
+├── precios-frontend/ # Aplicación en React con TypeScript y TailwindCSS
+├── precios-backend/ # Servidor backend en Node.js
+└── README.md # Documentación del proyecto
 
-Backend: Node.js, Express
-
-Base de datos: (especificar si usas MongoDB, MySQL, etc.)
-
-Control de versiones: Git y GitHub
-
-🔧 Instalación y ejecución
-1. Clona el repositorio
-bash
+yaml
 Copiar
 Editar
+
+---
+
+## 🚀 Tecnologías Usadas
+
+- **Frontend:** React, TypeScript, TailwindCSS, Vite (si aplica)
+- **Backend:** Node.js, Express
+- **Base de datos:** (especificar si usas MongoDB, MySQL, etc.)
+- **Control de versiones:** Git y GitHub
+
+---
+
+## 🔧 Instalación y ejecución
+
+### 1. Clona el repositorio
+
+```bash
 git clone https://github.com/tu-usuario/preciosMayorista.git
 cd preciosMayorista
 2. Inicia el Backend
@@ -55,6 +63,10 @@ Este sistema fue desarrollado con el fin de agilizar el control de precios en el
 Asegúrate de que el backend esté corriendo antes de iniciar el frontend.
 
 Se puede adaptar fácilmente para otros mercados o ciudades.
+
+TailwindCSS permite una personalización rápida del diseño y estilos.
+
+TypeScript mejora la robustez y escalabilidad del código frontend.
 
 👨‍💻 Autor
 21ledclique
